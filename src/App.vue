@@ -27,8 +27,15 @@ const filteredPlants = computed(() => {
   <div class="container">
     <h1>Maricopa County Pollinator Pathway Planner</h1>
     <p>
-      Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-      documentation
+      This website is to assist in planning a pollinator garden using the
+      <a href="https://libguides.maricopa.edu/seed/pathway" target="_blank"
+        >Maricop Pollinator Pathway</a
+      >
+      certification. For more information about the Maricopa Pollinator Pathway program and the
+      certification rules, please visit:
+      <a href="https://libguides.maricopa.edu/seed/pathway" target="_blank"
+        >https://libguides.maricopa.edu/seed/pathway</a
+      >.
     </p>
 
     <div>
