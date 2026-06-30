@@ -1,30 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { Plant } from '../types/plant'
+import { months, formatMonth } from '../components/MonthComposable'
 const props = defineProps<{
   item: Plant
 }>()
 
 const contiguousBloomMonths = computed<string[]>(() => {
-  const months = [
-    'january',
-    'february',
-    'march',
-    'april',
-    'may',
-    'june',
-    'july',
-    'august',
-    'september',
-    'october',
-    'november',
-    'december',
-  ] as const
-
-  const formatMonth = (month: string): string => {
-    return month.charAt(0).toUpperCase() + month.slice(1)
-  }
-
   const blooms: string[] = []
   let startIndex: number | null = null
 
@@ -145,6 +127,7 @@ const commercialAvailablility = computed<string>(() => {
           </div>
         </div>
         <div class="col-sm text-end">
+          <small v-if="item.pollinator" class="text-muted d-block">Pollinator</small>
           <small v-if="item.hostPlant" class="text-muted d-block"> Host plant </small>
           <small v-if="item.containerFriendly" class="text-muted d-block">Container friendly</small>
           <small v-if="item.hummingbirdAttractor" class="text-muted d-block"

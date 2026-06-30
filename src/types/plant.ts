@@ -25,6 +25,7 @@ export interface Plant {
   specialValueNativeBees: boolean | null
   extendedBloom: boolean | null
   source: string
+  pollinator: string | null
   hostPlantWeight: string | null
   hostFor: string | null
 }
