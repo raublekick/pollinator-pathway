@@ -14,8 +14,8 @@ export interface Plant {
   october: boolean | null
   november: boolean | null
   december: boolean | null
-  nativity: string
-  availability: string
+  nativity: string | null
+  availability: string | null
   notes: string | null
   hummingbirdAttractor: boolean | null
   hostPlant: boolean | null
