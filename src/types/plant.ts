@@ -1,7 +1,7 @@
 export interface Plant {
   type: string
   commonName: string
-  scientificName: string
+  scientificName: string | null
   january: boolean | null
   february: boolean | null
   march: boolean | null

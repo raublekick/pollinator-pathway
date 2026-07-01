@@ -54,7 +54,6 @@ const tabs = ref([
         </div>
       </template>
     </div>
-    <PlantList />
   </div>
   <footer class="footer bg-light">
     <div class="container py-3">
