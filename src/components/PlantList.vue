@@ -1,83 +1,11 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { usePlannerStore } from '../stores/planner'
+import { ref } from 'vue'
+import { useFilterStore } from '../stores/filters'
 import PlantCard from '../components/PlantCard.vue'
 import { months, formatMonth } from '../components/MonthComposable'
 
-const plannerStore = usePlannerStore()
-const searchQuery = ref('')
+const filterStore = useFilterStore()
 const showAdvancedFilters = ref(false)
-
-const filters = ref({
-  january: null,
-  february: null,
-  march: null,
-  april: null,
-  may: null,
-  june: null,
-  july: null,
-  august: null,
-  september: null,
-  october: null,
-  november: null,
-  december: null,
-  native: null,
-  bioreg: null,
-  commercial: null,
-  nonCommercial: null,
-  hummingbirdAttractor: null,
-  pollinator: null,
-  hostPlant: null,
-  maricopaNativeSeedLibrary: null,
-  containerFriendly: null,
-  birdNestHabitat: null,
-  specialValueNativeBees: null,
-  extendedBloom: null,
-})
-
-const filteredPlants = computed(() => {
-  let filtered = plannerStore.plants || []
-
-  type Plant = (typeof plannerStore.plants)[number]
-  type Predicate = (p: Plant) => boolean | null
-
-  // create array of filter predicates and remove nulls
-  const fixedPredicates: Predicate[] = [
-    filters.value.native ? (p: Plant) => p.nativity === 'N' : null,
-    filters.value.bioreg ? (p: Plant) => p.nativity === 'BIOREG' : null,
-    filters.value.commercial ? (p: Plant) => p.availability === 'C' : null,
-    filters.value.nonCommercial ? (p: Plant) => p.availability === 'NC' : null,
-    filters.value.hummingbirdAttractor ? (p: Plant) => p.hummingbirdAttractor : null,
-    filters.value.birdNestHabitat ? (p: Plant) => p.birdNestHabitat : null,
-    filters.value.specialValueNativeBees ? (p: Plant) => p.specialValueNativeBees : null,
-    filters.value.extendedBloom ? (p: Plant) => p.extendedBloom : null,
-    filters.value.hostPlant ? (p: Plant) => p.hostPlant : null,
-    filters.value.pollinator ? (p: Plant) => p.pollinator : null,
-  ].filter(Boolean) as Array<(p: Plant) => boolean>
-
-  // add month predicates dynamically
-  const monthPredicates: Predicate[] = months
-    .filter((month) => filters.value[month])
-    .map((month) => (p) => Boolean(p[month]))
-
-  const activeFilters = [...monthPredicates, ...fixedPredicates]
-
-  // get items where any predicate matches
-  if (activeFilters.length) {
-    filtered = filtered.filter((plant) => activeFilters.some((check) => check(plant)))
-  }
-
-  // Filter by search query
-  if (searchQuery.value) {
-    filtered = filtered.filter((resource) =>
-      Object.values(resource).some((val) =>
-        String(val).toLowerCase().includes(searchQuery.value.toLowerCase()),
-      ),
-    )
-  }
-
-  return filtered
-})
 </script>
 
 <template>
@@ -86,7 +14,7 @@ const filteredPlants = computed(() => {
       <label for="search-input" class="visually-hidden">Search plants</label>
       <input
         id="search-input"
-        v-model="searchQuery"
+        v-model="filterStore.searchQuery"
         type="text"
         class="form-control"
         placeholder="Search plants..."
@@ -113,7 +41,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkNative"
-                v-model="filters.native"
+                v-model="filterStore.filters.native"
               />
               <label class="form-check-label" for="checkNative"> Native</label>
             </div>
@@ -123,7 +51,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkBioreg"
-                v-model="filters.bioreg"
+                v-model="filterStore.filters.bioreg"
               />
               <label class="form-check-label" for="checkBioreg">Regional</label>
             </div>
@@ -135,7 +63,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkCommercial"
-                v-model="filters.commercial"
+                v-model="filterStore.filters.commercial"
               />
               <label class="form-check-label" for="checkCommercial"> Commercially available</label>
             </div>
@@ -145,7 +73,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkNoncommercial"
-                v-model="filters.nonCommercial"
+                v-model="filterStore.filters.nonCommercial"
               />
               <label class="form-check-label" for="checkNoncommercial"
                 >Not commercially available</label
@@ -159,7 +87,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkHummingbirds"
-                v-model="filters.hummingbirdAttractor"
+                v-model="filterStore.filters.hummingbirdAttractor"
               />
               <label class="form-check-label" for="checkHummingbirds">Attracts hummingbirds</label>
             </div>
@@ -169,7 +97,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkBirds"
-                v-model="filters.birdNestHabitat"
+                v-model="filterStore.filters.birdNestHabitat"
               />
               <label class="form-check-label" for="checkBirds">Bird nest habitat</label>
             </div>
@@ -180,7 +108,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkNativeBeeds"
-                v-model="filters.specialValueNativeBees"
+                v-model="filterStore.filters.specialValueNativeBees"
               />
               <label class="form-check-label" for="checkNativeBees"
                 >Special value to native bees</label
@@ -194,7 +122,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkExtendedBloom"
-                v-model="filters.extendedBloom"
+                v-model="filterStore.filters.extendedBloom"
               />
               <label class="form-check-label" for="checkExtendedBloom">Extended bloom</label>
             </div>
@@ -206,7 +134,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkPollinator"
-                v-model="filters.pollinator"
+                v-model="filterStore.filters.pollinator"
               />
               <label class="form-check-label" for="checkPollinator">Pollinator</label>
             </div>
@@ -216,7 +144,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 id="checkHost"
-                v-model="filters.hostPlant"
+                v-model="filterStore.filters.hostPlant"
               />
               <label class="form-check-label" for="checkHost">Host plant</label>
             </div>
@@ -231,7 +159,7 @@ const filteredPlants = computed(() => {
                 class="form-check-input"
                 type="checkbox"
                 :id="`check${month}`"
-                v-model="filters[month]"
+                v-model="filterStore.filters[month]"
               />
               <label class="form-check-label" :for="`check${month}`">{{
                 formatMonth(month)
@@ -242,7 +170,7 @@ const filteredPlants = computed(() => {
       </div>
     </div>
     <PlantCard
-      v-for="(plant, index) in filteredPlants"
+      v-for="(plant, index) in filterStore.filteredPlants"
       :key="index"
       :item="plant"
       class="mb-3"

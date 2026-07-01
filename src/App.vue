@@ -77,9 +77,11 @@ const tabs = ref([
   /* font-weight: bold;
   font-size: 24px; */
 
-  margin: 0.2em 0.2em 0 0.2em;
+  border: 1px solid var(--bs-nav-tabs-border-color);
+  border-bottom: 3px solid var(--bs-nav-tabs-border-color);
   background-color: var(--bs-light-rgb);
   color: var(--bs-secondary-color);
+  border-radius: 0;
 }
 .nav-tabs .nav-link.active {
   background-color: rgba(0, 0, 0, 0);
