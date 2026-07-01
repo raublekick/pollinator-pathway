@@ -93,8 +93,8 @@ export const usePlannerStore = defineStore('planner', () => {
 
   function removePlant(plant: Plant) {
     const index = selectedPlants.value.findIndex((item) => matchPlants(item, plant))
-    if (index >= 0) {
-      selectedPlants.value.splice(index)
+    if (index > -1) {
+      selectedPlants.value.splice(index, 1)
     }
   }
 
@@ -107,5 +107,6 @@ export const usePlannerStore = defineStore('planner', () => {
     coreLevel,
     comprehensiveLevel,
     userMetrics,
+    matchPlants,
   }
 })

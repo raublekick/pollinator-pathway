@@ -10,7 +10,7 @@ const plannerStore = usePlannerStore()
 <template>
   <div>
     <PlantCard
-      v-for="(plant, index) in filterStore.filteredPlants"
+      v-for="(plant, index) in filterStore.filteredSelectedPlants"
       :key="index"
       :item="plant"
       class="mb-3"

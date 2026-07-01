@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, markRaw } from 'vue'
 import PlantList from './components/PlantList.vue'
 import PlannerList from './components/PlannerList.vue'
 import FilterControls from './components/FilterControls.vue'
 
 const activeTab = ref(0)
 const tabs = ref([
-  { name: 'Plant List', component: PlantList },
-  { name: 'Planner Progress', component: PlannerList },
+  { name: 'Plant List', component: markRaw(PlantList) },
+  { name: 'Planner Progress', component: markRaw(PlannerList) },
 ])
 </script>
 
@@ -17,7 +17,7 @@ const tabs = ref([
     <p>
       This website is to assist in planning a pollinator garden using the
       <a href="https://libguides.maricopa.edu/seed/pathway" target="_blank"
-        >Maricop Pollinator Pathway</a
+        >Maricopa Pollinator Pathway</a
       >
       certification. For more information about the Maricopa Pollinator Pathway program and the
       certification rules, please visit:

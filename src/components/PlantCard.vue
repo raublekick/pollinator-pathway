@@ -2,9 +2,19 @@
 import { computed } from 'vue'
 import type { Plant } from '../types/plant'
 import { months, formatMonth } from '../components/MonthComposable'
+import { usePlannerStore } from '../stores/planner'
+
+const plannerStore = usePlannerStore()
+
 const props = defineProps<{
   item: Plant
 }>()
+
+const isSelected = computed<boolean>(() => {
+  return plannerStore.selectedPlants.some((p) => {
+    return plannerStore.matchPlants(p, props.item)
+  })
+})
 
 const contiguousBloomMonths = computed<string[]>(() => {
   const blooms: string[] = []
@@ -56,7 +66,7 @@ const commercialAvailablility = computed<string>(() => {
 </script>
 
 <template>
-  <div class="card position-relative">
+  <div class="card position-relative plant-card">
     <div class="card-header">
       {{ item.commonName }} <span v-if="item.scientificName">({{ item.scientificName }})</span>
       <div class="float-end">{{ item.type }}</div>
@@ -152,6 +162,20 @@ const commercialAvailablility = computed<string>(() => {
           </small>
         </div>
       </div>
+      <button
+        v-if="!isSelected"
+        class="btn btn-sm btn-outline-success float-end my-3 planner-control"
+        @click="plannerStore.addPlant(item)"
+      >
+        Add to planner
+      </button>
+      <button
+        v-if="isSelected"
+        class="btn btn-sm btn-outline-danger float-end my-3 planner-control"
+        @click="plannerStore.removePlant(item)"
+      >
+        Remove from planner
+      </button>
     </div>
   </div>
 </template>
@@ -159,5 +183,11 @@ const commercialAvailablility = computed<string>(() => {
 <style lang="css">
 /* .bloom-months {
   font-size: clamp(0.75rem, 1vw, 1rem);
+} */
+/* .planner-control {
+  visibility: hidden;
+}
+.plant-card:hover .planner-control {
+  visibility: visible;
 } */
 </style>
