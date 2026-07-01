@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import PlantList from './components/PlantList.vue'
+import PlannerList from './components/PlannerList.vue'
+import FilterControls from './components/FilterControls.vue'
 
 const activeTab = ref(0)
 const tabs = ref([
   { name: 'Plant List', component: PlantList },
-  { name: 'Planner Progress', component: PlantList },
+  { name: 'Planner Progress', component: PlannerList },
 ])
 </script>
 
@@ -23,6 +25,7 @@ const tabs = ref([
         >https://libguides.maricopa.edu/seed/pathway</a
       >.
     </p>
+    <FilterControls />
     <nav>
       <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist" data-scroll-position="0">
         <template v-for="(tab, index) in tabs" :key="index">
