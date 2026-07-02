@@ -14,10 +14,11 @@ export interface MonthMetric {
 }
 
 export interface UserMetric {
-  hasRequiredPlants: boolean
   numberOfPollinators: number
   numberOfHosts: number
   numberOfHummingbirdHabitats: number
   numberOfOtherBirdHabitats: number
   numberOfBloomsPerMonth: MonthMetric
+  minNumberOfBloomsPerMonth: number
+  maxNumberOfBloomsPerMonth: number
 }

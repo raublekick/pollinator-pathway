@@ -4,6 +4,8 @@ import data from './data.json'
 import type { Plant } from '../types/plant'
 import type { ParticipantLevel } from '../types/participantLevel'
 import type { UserMetric } from '../types/userMetric'
+import type { ParticipantLevelMetric } from '../types/participantLevel'
+import { months } from '@/components/MonthComposable'
 
 export const usePlannerStore = defineStore('planner', () => {
   const plants = ref<Plant[]>(data as Plant[])
@@ -13,8 +15,9 @@ export const usePlannerStore = defineStore('planner', () => {
 
   const contributingLevel: ParticipantLevel = {
     name: 'Participant',
+    description: '',
     requiredPlants: requiredSpecies,
-    minimumPollinators: 0,
+    minimumPollinators: 1,
     minimumHosts: 0,
     minimumHummingbirdHabitats: 0,
     minimumOtherBirdHabitats: 0,
@@ -23,6 +26,7 @@ export const usePlannerStore = defineStore('planner', () => {
 
   const coreLevel: ParticipantLevel = {
     name: 'Core',
+    description: '',
     requiredPlants: requiredSpecies,
     minimumPollinators: 5,
     minimumHosts: 3,
@@ -33,6 +37,7 @@ export const usePlannerStore = defineStore('planner', () => {
 
   const comprehensiveLevel: ParticipantLevel = {
     name: 'Comprehensive',
+    description: '',
     requiredPlants: requiredSpecies,
     minimumPollinators: 9,
     minimumHosts: 7,
@@ -41,13 +46,39 @@ export const usePlannerStore = defineStore('planner', () => {
     minimumContinuousBlooms: 3,
   }
 
+  const levels = [contributingLevel, coreLevel, comprehensiveLevel]
+
+  const hostedLarva = computed<string[]>(() => {
+    const unique = [
+      // use Set to get unique items in the end
+      ...new Set(
+        selectedPlants.value
+          // map the hostFor strings
+          .map((p) => p.hostFor)
+          // remove nulls and empties
+          .filter((h): h is string => !!h)
+          // flatten out strings like "Insect1, Insect2" into individual entries
+          .flatMap((h) => h.split(','))
+          // trim the results
+          .map((name) => name.trim())
+          // get rid of empties
+          .filter((name) => name.length > 0),
+      ),
+    ]
+    return unique.sort((a, b) => a.localeCompare(b))
+  })
+
   const userMetrics = computed<UserMetric>(() => {
     // TODO: Change the JSON to have a "pollinator" attribute
     // TODO: Change the JSON to have a "larvalHost" attribute
+
+    const bloomMonthCounts = months.map((month) => {
+      return selectedPlants.value.filter((p) => p[month]).length
+    })
+    const minBloomsPerMonth = Math.min(...bloomMonthCounts) ?? 0
+    const maxBloomsPerMonth = Math.max(...bloomMonthCounts) ?? 0
+
     return {
-      hasRequiredPlants: !!selectedPlants.value.filter(
-        (p) => selectedLevel.value?.requiredPlants.filter((s) => s === p.scientificName).length,
-      ).length,
       numberOfPollinators: selectedPlants.value.filter((p) => p.source === 'MCPP').length,
       numberOfHosts: selectedPlants.value.filter((p) => p.source === 'MCPPH').length,
       numberOfHummingbirdHabitats: selectedPlants.value.filter((p) => p.hummingbirdAttractor)
@@ -67,17 +98,40 @@ export const usePlannerStore = defineStore('planner', () => {
         november: selectedPlants.value.filter((p) => p.november).length,
         december: selectedPlants.value.filter((p) => p.december).length,
       },
+      minNumberOfBloomsPerMonth: minBloomsPerMonth,
+      maxNumberOfBloomsPerMonth: maxBloomsPerMonth,
     }
   })
 
-  const verifyContributing = computed(() => {
-    return selectedPlants.value.length
-  })
-  const verifyCore = computed(() => {
-    return selectedPlants.value.length
-  })
-  const verifyComprehensive = computed(() => {
-    return selectedPlants.value.length
+  const levelMetrics = computed<ParticipantLevelMetric[]>(() => {
+    const metrics: ParticipantLevelMetric[] = []
+    levels.forEach((level) => {
+      const userMonthValues = Object.values(userMetrics.value.numberOfBloomsPerMonth).map(Number)
+      const minBloomsPerMonth = userMonthValues.length ? Math.min(...userMonthValues) : 0
+      const maxBloomsPerMonth = userMonthValues.length ? Math.max(...userMonthValues) : 0
+      const levelMetric: ParticipantLevelMetric = {
+        name: level.name,
+        requiredPlants:
+          level.requiredPlants.filter((s) =>
+            selectedPlants.value.some((p) => p.scientificName === s),
+          ) ?? null,
+        hasRequiredPlants:
+          level.requiredPlants.filter((s) =>
+            selectedPlants.value.some((p) => p.scientificName === s),
+          ).length === level.requiredPlants.length,
+        hasNumberOfPollinators: level.minimumPollinators <= userMetrics.value.numberOfPollinators,
+        hasNumberOfHosts: level.minimumHosts <= userMetrics.value.numberOfHosts,
+        hasNumberOfHummingbirdHabitats:
+          level.minimumHummingbirdHabitats <= userMetrics.value.numberOfHummingbirdHabitats,
+        hasNumberOfOtherBirdHabitats:
+          level.minimumOtherBirdHabitats <= userMetrics.value.numberOfOtherBirdHabitats,
+
+        hasBloomsPerMonth:
+          userMetrics.value.minNumberOfBloomsPerMonth >= level.minimumContinuousBlooms,
+      }
+      metrics.push(levelMetric)
+    })
+    return metrics
   })
 
   function matchPlants(first: Plant, second: Plant) {
@@ -103,10 +157,11 @@ export const usePlannerStore = defineStore('planner', () => {
     selectedPlants,
     addPlant,
     removePlant,
-    contributingLevel,
-    coreLevel,
-    comprehensiveLevel,
+    levels,
     userMetrics,
+    selectedLevel,
+    levelMetrics,
     matchPlants,
+    hostedLarva,
   }
 })
