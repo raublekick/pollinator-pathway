@@ -12,64 +12,108 @@ const tabs = ref([
 </script>
 
 <template>
-  <div class="container">
-    <h1>Maricopa County Pollinator Pathway Planner</h1>
-    <p>
-      This website is to assist in planning a pollinator garden using the
-      <a href="https://libguides.maricopa.edu/seed/pathway" target="_blank"
-        >Maricopa Pollinator Pathway</a
-      >
-      certification. For more information about the Maricopa Pollinator Pathway program and the
-      certification rules, please visit:
-      <a href="https://libguides.maricopa.edu/seed/pathway" target="_blank"
-        >https://libguides.maricopa.edu/seed/pathway</a
-      >.
-    </p>
-    <FilterControls />
-    <nav>
-      <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist" data-scroll-position="0">
-        <template v-for="(tab, index) in tabs" :key="index">
-          <a
-            :class="['nav-item', 'nav-link', activeTab === index ? 'active' : '']"
-            :id="'nav-step' + index + '-tab'"
-            data-bs-toggle="tab"
-            :href="'#nav-step' + index"
-            role="tab"
-            :aria-controls="'nav-step' + index"
-            aria-selected="true"
-            :aria-current="index === activeTab"
-            @click="activeTab = index"
+  <div class="app-shell">
+    <main class="app-main">
+      <div class="container">
+        <h1>Maricopa County Pollinator Pathway Planner</h1>
+        <p>
+          This website is to assist in planning a pollinator garden using the
+          <a href="https://libguides.maricopa.edu/seed/pathway" target="_blank"
+            >Maricopa Pollinator Pathway</a
           >
-            {{ tab.name }}
-          </a>
-        </template>
-      </div>
-    </nav>
-    <div class="tab-content py-3" id="nav-tabContent">
-      <template v-for="(tab, index) in tabs" :key="index">
-        <div
-          :class="['tab-pane', 'fade', activeTab === index ? ['active', 'show'] : '']"
-          :id="'nav-step' + index"
-          role="tabpanel"
-          :aria-labelledby="'nav-step' + index + '-tab'"
-        >
-          <component :is="tab.component"></component>
+          certification. For more information about the Maricopa Pollinator Pathway program and the
+          certification rules, please visit:
+          <a href="https://libguides.maricopa.edu/seed/pathway" target="_blank"
+            >https://libguides.maricopa.edu/seed/pathway</a
+          >.
+        </p>
+        <FilterControls />
+        <nav>
+          <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist" data-scroll-position="0">
+            <template v-for="(tab, index) in tabs" :key="index">
+              <a
+                :class="['nav-item', 'nav-link', activeTab === index ? 'active' : '']"
+                :id="'nav-step' + index + '-tab'"
+                data-bs-toggle="tab"
+                :href="'#nav-step' + index"
+                role="tab"
+                :aria-controls="'nav-step' + index"
+                aria-selected="true"
+                :aria-current="index === activeTab"
+                @click="activeTab = index"
+              >
+                {{ tab.name }}
+              </a>
+            </template>
+          </div>
+        </nav>
+        <div class="tab-content py-3" id="nav-tabContent">
+          <template v-for="(tab, index) in tabs" :key="index">
+            <div
+              :class="['tab-pane', 'fade', activeTab === index ? ['active', 'show'] : '']"
+              :id="'nav-step' + index"
+              role="tabpanel"
+              :aria-labelledby="'nav-step' + index + '-tab'"
+            >
+              <component :is="tab.component"></component>
+            </div>
+          </template>
         </div>
-      </template>
-    </div>
+      </div>
+    </main>
+    <footer class="footer bg-light">
+      <div class="container py-3">
+        <div class="row">
+          <div class="col">
+            <p>
+              Source code available on
+              <a href="https://github.com/raublekick/pollinator-pathway">GitHub</a>
+            </p>
+            <p>
+              Favicon courtesy of
+              <a href="https://pixelsafari.neocities.org/favicon/" target="_blank">Pixel Safari</a>
+            </p>
+          </div>
+          <div class="col text-end">
+            <p>
+              This work is licensed under
+              <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a
+              ><img
+                src="https://mirrors.creativecommons.org/presskit/icons/cc.svg"
+                alt=""
+                style="max-width: 1em; max-height: 1em; margin-left: 0.2em"
+              /><img
+                src="https://mirrors.creativecommons.org/presskit/icons/by.svg"
+                alt=""
+                style="max-width: 1em; max-height: 1em; margin-left: 0.2em"
+              /><img
+                src="https://mirrors.creativecommons.org/presskit/icons/sa.svg"
+                alt=""
+                style="max-width: 1em; max-height: 1em; margin-left: 0.2em"
+              />
+            </p>
+            <p>No AI was harmed in the making of this website.</p>
+          </div>
+        </div>
+      </div>
+    </footer>
   </div>
-  <footer class="footer bg-light">
-    <div class="container py-3">
-      <p>
-        Favicon courtesy of
-        <a href="https://pixelsafari.neocities.org/favicon/" target="_blank">Pixel Safari</a>
-      </p>
-      <p>No AI was harmed in the making of this website.</p>
-    </div>
-  </footer>
 </template>
 
 <style scoped>
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-main {
+  flex: 1;
+}
+
+.footer {
+  flex-shrink: 0;
+}
 .nav-tabs .nav-link {
   color: #000;
   padding: 0.2em 0.8em;
