@@ -79,8 +79,8 @@ export const usePlannerStore = defineStore('planner', () => {
     const maxBloomsPerMonth = Math.max(...bloomMonthCounts) ?? 0
 
     return {
-      numberOfPollinators: selectedPlants.value.filter((p) => p.source === 'MCPP').length,
-      numberOfHosts: selectedPlants.value.filter((p) => p.source === 'MCPPH').length,
+      numberOfPollinators: selectedPlants.value.filter((p) => p.pollinator).length,
+      numberOfHosts: selectedPlants.value.filter((p) => p.hostPlant).length,
       numberOfHummingbirdHabitats: selectedPlants.value.filter((p) => p.hummingbirdAttractor)
         .length,
       numberOfOtherBirdHabitats: selectedPlants.value.filter((p) => p.birdNestHabitat).length,
