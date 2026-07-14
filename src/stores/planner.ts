@@ -6,10 +6,11 @@ import type { ParticipantLevel } from '../types/participantLevel'
 import type { UserMetric } from '../types/userMetric'
 import type { ParticipantLevelMetric } from '../types/participantLevel'
 import { months } from '@/components/MonthComposable'
+import { useStorage } from '@vueuse/core'
 
 export const usePlannerStore = defineStore('planner', () => {
   const plants = ref<Plant[]>(data as Plant[])
-  const selectedPlants = ref<Plant[]>([])
+  const selectedPlants = useStorage('selected-plants', <Plant[]>[])
   const requiredSpecies: string[] = ['Asclepias subulata']
   const selectedLevel = ref<ParticipantLevel | null>(null)
 
