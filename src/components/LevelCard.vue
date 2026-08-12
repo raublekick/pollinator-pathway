@@ -38,6 +38,15 @@ const levelMetric = computed<ParticipantLevelMetric | null>(() => {
           </div>
         </li>
         <li class="list-group-item px-0">
+          <span class="fw-bold"># of pollinators</span>
+          <span
+            class="text-end float-end"
+            :class="[levelMetric?.hasNumberOfPollinators ? 'text-success' : '']"
+            >{{ plannerStore.userMetrics.numberOfPollinators }} /
+            {{ level.minimumPollinators }}</span
+          >
+        </li>
+        <li class="list-group-item px-0">
           <span class="fw-bold"># of larval host plants</span>
           <span
             class="text-end float-end"

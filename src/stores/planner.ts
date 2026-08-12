@@ -6,7 +6,7 @@ import type { ParticipantLevel } from '../types/participantLevel'
 import type { UserMetric } from '../types/userMetric'
 import type { ParticipantLevelMetric } from '../types/participantLevel'
 import { months } from '@/components/MonthComposable'
-import { useStorage } from '@vueuse/core'
+import { useStorage, useBase64 } from '@vueuse/core'
 
 export const usePlannerStore = defineStore('planner', () => {
   const plants = ref<Plant[]>(data as Plant[])
@@ -153,6 +153,12 @@ export const usePlannerStore = defineStore('planner', () => {
     }
   }
 
+  async function getExport() {
+    const { base64: exportString } = await useBase64(selectedPlants.value, { dataUrl: false })
+    const url = window.location.origin + '?planner=' + exportString.value
+    return url
+  }
+
   return {
     plants,
     selectedPlants,
@@ -164,5 +170,6 @@ export const usePlannerStore = defineStore('planner', () => {
     levelMetrics,
     matchPlants,
     hostedLarva,
+    getExport,
   }
 })

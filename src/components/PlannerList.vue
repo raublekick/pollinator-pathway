@@ -4,8 +4,15 @@ import { usePlannerStore } from '@/stores/planner.ts'
 import PlantCard from '../components/PlantCard.vue'
 import LevelCard from './LevelCard.vue'
 import { months, formatMonth } from './MonthComposable.ts'
+import { useClipboard } from '@vueuse/core'
 const filterStore = useFilterStore()
 const plannerStore = usePlannerStore()
+const { text, copy, copied, isSupported } = useClipboard()
+
+async function copyUrl() {
+  const exportedString = await plannerStore.getExport()
+  copy(exportedString)
+}
 </script>
 
 <template>
@@ -39,6 +46,18 @@ const plannerStore = usePlannerStore()
   <h5 class="pt-3">My plants</h5>
   <div class="alert alert-info" v-if="!filterStore.filteredSelectedPlants.length">
     Add plants from the plant list tab to show them here.
+  </div>
+  <div v-if="false">
+    <div v-if="isSupported">
+      <button @click="copyUrl()">
+        <!-- by default, `copied` will be reset in 1.5s -->
+        <span v-if="!copied">Copy</span>
+        <span v-else>Copied!</span>
+      </button>
+      <p>
+        Current copied: <code>{{ text || 'none' }}</code>
+      </p>
+    </div>
   </div>
   <div>
     <PlantCard
