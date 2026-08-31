@@ -19,6 +19,11 @@ import { RouterView } from 'vue-router'
           >.
         </p>
 
+        <p>
+          For more information about how to help with this project,
+          <RouterLink to="/to-do">click here</RouterLink>.
+        </p>
+
         <RouterView />
       </div>
     </main>
